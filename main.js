@@ -6,21 +6,21 @@ let subtotal=0;
 let total=0;
 document.getElementById("Agregar").onclick = function() {
 let checkboxes = document.getElementsByName("equipos");
-let cliente=prompt("Ingresar Nombre de Cliente"); 
+let cliente=prompt("Ingresar Nombre de Cliente");
     for (let checkbox of checkboxes)
     {
         if (checkbox.checked){
-        console.log(cliente);
         nombreequipo=checkbox.id;
         precioequipo=parseFloat(checkbox.value);
         console.log("Producto Agregado "+checkbox.id+"  S/ "+ checkbox.value);
         importe+=precioequipo;
         } 
     }
+    
     calcularIVG(importe)
     if(precioequipo==0){
         alert("Seleccione un produto");
-        console.log("Seleccione un produto");
+        //console.log("Seleccione un produto");
     }
     function calcularIVG(importe){
         if(importe!=0)
@@ -31,8 +31,12 @@ let cliente=prompt("Ingresar Nombre de Cliente");
             console.log("Sub Total: s/ "+subtotal);
             console.log("I.G.V: s/ "+IGV);
             console.log("Total: s/ "+total);
+            console.log("-----------------");
+            console.log("Cliente: " + cliente);
+            console.log("-----------------");
             console.log("Compra Exitosa");
         }
         
     }
 }
+
