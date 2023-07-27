@@ -118,7 +118,7 @@ for(let equipo of equipos)
     <div class="card-body">
     <span class="badge text-bg-light">${equipo.nobreEquipo}</span><br>
       <img src="${equipo.imagenEquipo}" class="img-thumbnail" alt="Laptop">
-      <label for="exampleFormControlInput1" class="form-label">Precio:s/ ${equipo.precio}</label><br>
+      <label for="exampleFormControlInput1" class="form-label">Precio:s/ ${equipo.precio}<br>
       <div class="input-group mb-3 input-group-sm">
       <button type="button" class="btn btn-success comprar" value="${equipo.id}" data-bs-toggle="modal" data-bs-target="#exampleModal">Comprar</button>
      </div>
