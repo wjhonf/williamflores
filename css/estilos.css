@@ -1,0 +1,82 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; }
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: aliceblue;
+  background-image: url("../imagenes/fondo1.jpg");
+  width: 80%;
+  margin: auto; }
+
+header {
+  width: 100%;
+  align-items: center; }
+  header .menu {
+    background-color: #01427c; }
+    header .menu .bordeicono {
+      border-color: white; }
+    header .menu .nombreemp {
+      color: white;
+      text-decoration: none; }
+      header .menu .nombreemp:hover {
+        background-color: white;
+        color: black;
+        border-bottom: white;
+        border-radius: 1px; }
+    header .menu ul {
+      list-style-type: none; }
+      header .menu ul a {
+        color: white;
+        text-decoration: none; }
+        header .menu ul a:hover {
+          background-color: white;
+          color: black;
+          border-bottom: white;
+          border-radius: 1px; }
+
+main {
+  background-color: rgba(226, 174, 30, 0.486); }
+  main .espacio {
+    padding: 5px; }
+  main .parrafo {
+    text-align: justify;
+    font-size: 0.8rem; }
+  main .titulo, main .titulo .tituloinicio, main .titulo .titulonotros {
+    width: 100%;
+    text-align: center;
+    background-color: #0191C8;
+    font-size: 0.8rem;
+    border-radius: 0%; }
+    main .titulo .tituloinicio {
+      height: 1.4rem; }
+  main .titulodetalle {
+    background-color: #0191C8; }
+  main iframe {
+    height: 16.9rem; }
+  main .botones {
+    background-color: #0191C8;
+    color: white; }
+  main .botones:hover {
+    border-color: #01427c; }
+
+footer {
+  background-color: #01427c;
+  width: 100%;
+  color: white;
+  font-size: 13px;
+  padding: 10px; }
+  footer .footertitus {
+    font-size: 0.8rem;
+    font-weight: bold; }
+  footer .container img {
+    width: 7%;
+    border-radius: 3rem; }
+  footer .redes {
+    color: white;
+    text-decoration: none; }
+
+@media screen and (max-width: 768px) {
+  body {
+    width: 100%; } }
