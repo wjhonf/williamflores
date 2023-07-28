@@ -51,7 +51,7 @@ function buscar(){
     const caractEquipos=[
         {id:1, descripEquipo:"Laptop - Lenovo I3 RAM:8GB Disco:240GB",precio:1000},
         {id:2, descripEquipo:"PC - DELL I7 RAM:16GB Disco:1TB",precio:1500},
-        {id:3, descripEquipo:"Impresora - EPSON Multifuncional",precio:1000},
+        {id:3, descripEquipo:"Impresora - EPSON Multifuncional",precio:700},
         {id:4, descripEquipo:"Monitor - LG 19 Pulgadas",precio:200},
     ]
     function mostrarCaracteristicas(caracteristicas){
