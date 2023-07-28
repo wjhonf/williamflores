@@ -31,15 +31,15 @@ function sumarColumna() {
   document.getElementById("Total").innerHTML="Total: S/ "+total;
 }
 function eliminarFila(boton) {
-  var fila = boton.parentNode.parentNode;
-  var tabla = fila.parentNode; 
+  let fila = boton.parentNode.parentNode;
+  let tabla = fila.parentNode; 
   tabla.removeChild(fila);
   sumarColumna()
 }
 function validarNumeros(event) {
-  var cajaTexto = event.target;
-  var valor = cajaTexto.value;
-  var regex = /^[0-9]+$/;
+  let cajaTexto = event.target;
+  let valor = cajaTexto.value;
+  let regex = /^[0-9]+$/;
 
   if (!regex.test(valor)) {
     cajaTexto.value = valor.replace(/\D/g, '');
@@ -138,8 +138,8 @@ Cerrarmodal.addEventListener('click', limpiar)
 let Cancelar = document.querySelector(".Cancelar")
 Cancelar.addEventListener('click', limpiar)
 function limpiar() {
-  var padre = document.getElementById("Equipos");
-  var hijoAEliminar = document.getElementById("w");
+  let padre = document.getElementById("Equipos");
+  let hijoAEliminar = document.getElementById("w");
   padre.removeChild(hijoAEliminar);
   }
 let agregarDetalle = document.querySelector(".addDetalle");
