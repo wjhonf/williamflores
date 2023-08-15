@@ -1,10 +1,36 @@
 let codigoEquipo=0;
 let aumentarCantidad=0;
-let importe=0;
+let carrito=[];
 let IGV=0.18;
-let subtotal=0;
 let total=0;
-let item=0;
+let item;
+document.addEventListener('DOMContentLoaded', ()=>{
+  if(JSON.parse(localStorage.getItem('carrito')) == null){
+    carrito = [];
+  }else {
+    carrito = JSON.parse(localStorage.getItem('carrito'));
+  }
+  cargarCarritoEnDOM();
+})
+function cargarCarritoEnDOM() {
+  const cuerpoTabla = document.getElementById("detalle");
+  const numeroFilas=cuerpoTabla.rows.length;
+  item=1;
+  carrito.forEach(Equip => {
+    const nuevaFila = document.createElement("tr");
+    nuevaFila.innerHTML = `
+    <td>${item}</td><td style="display: none;">${Equip.codigoEquipo}</td>
+      <td>${Equip.descripcion}</td>
+      <td>${Equip.precio}</td>
+      <td>${Equip.cantidad}</td>
+      <td>${Equip.importe}</td>
+      <td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">x</button></td>
+    `;
+    cuerpoTabla.appendChild(nuevaFila);
+    item++;
+  });
+  sumarColumna();
+}
 const equipos=[
     {id:1, nobreEquipo:"Laptop",precio:1000, imagenEquipo:"./imagenes/laptop.jpg"},
     {id:2, nobreEquipo:"PC",precio:1500, imagenEquipo:"./imagenes/pc.jpg"},
@@ -17,12 +43,11 @@ function sumarColumna() {
   const filas = tabla.getElementsByTagName("tr");
   let suma = 0;
   for (let i = 0; i < filas.length; i++) {
-    const celdas = filas[i].getElementsByTagName("td");
-    const valorCelda = parseInt(celdas[5].textContent); 
-    console.log(valorCelda);
-    if (!isNaN(valorCelda)) {
-      suma += valorCelda;
-    }
+      const celdas = filas[i].getElementsByTagName("td");
+      const valorCelda = parseInt(celdas[5].textContent); 
+      if (!isNaN(valorCelda)) {
+        suma += valorCelda;
+      }
   }
   document.getElementById("subTotal").innerHTML="Importe: S/ "+suma;
   IGV=suma*0.18
@@ -31,16 +56,28 @@ function sumarColumna() {
   document.getElementById("Total").innerHTML="Total: S/ "+total;
 }
 function eliminarFila(boton) {
-  let fila = boton.parentNode.parentNode;
+  let fila = boton.closest("tr"); 
   let tabla = fila.parentNode; 
+  const codigoEquipo = parseInt(fila.querySelector("td:nth-child(2)").textContent.trim());
+  carrito = carrito.filter(item => item.codigoEquipo !== codigoEquipo);
   tabla.removeChild(fila);
-  sumarColumna()
+  sumarColumna();
+  actualizarLocalStorage();
+  reenumerarItems();
+}
+function reenumerarItems() {
+  const cuerpoTabla = document.getElementById("detalle");
+  const filas = cuerpoTabla.getElementsByTagName("tr");
+  item = 0;
+  for (let i = 0; i < filas.length; i++) {
+    const celdas = filas[i].getElementsByTagName("td");
+    celdas[0].textContent = ++item; 
+  }
 }
 function validarNumeros(event) {
   let cajaTexto = event.target;
   let valor = cajaTexto.value;
   let regex = /^[0-9]+$/;
-
   if (!regex.test(valor)) {
     cajaTexto.value = valor.replace(/\D/g, '');
   }
@@ -64,7 +101,7 @@ function buscar(){
               <span class="badge text-bg-light precioProducto" id="precioEquipo"> ${detEquipo.precio}</span>
             </div>
             <div class="col-4">
-             <label for="exampleFormControlInput1" class="form-label">Ingresar Cantidad</label>
+            <label for="exampleFormControlInput1" class="form-label">Ingresar Cantidad</label>
               <div class="input-group">
                 <button class="btn btn-outline-warning disminuir" type="button">-</button>
                 <input type="text" class="form-control" id="cantidad" value="1" oninput="validarNumeros(event)" style="text-align: center;">
@@ -98,8 +135,6 @@ function buscar(){
         const resultado = caractEquipos.filter(filtrarId)
         if(resultado.length){
             mostrarCaracteristicas(resultado);
-        }else {
-            console.log("sin resultado");
         }
     }
     function filtrarId(caractEquipos){
@@ -147,22 +182,66 @@ agregarDetalle.addEventListener('click', AgregarDetalle)
 function AgregarDetalle(){
   const tabla=document.getElementById("detalle")
   const numeroFilas=tabla.rows.length;
-  item=1;
+
   if(numeroFilas>=0)
   { 
-    item+=numeroFilas;
-    const cuerpoTabla=document.getElementById("detalle");
-    const nuevaFila=document.createElement("tr");
     const idEquipo=document.getElementById("codigoEquipo").textContent;
-    const descripEquipo=document.getElementById("descipProducto").textContent;
-    const precioEquipo=parseFloat(document.getElementById("precioEquipo").textContent);
-    const cantidad=Number(document.getElementById("cantidad").value);
-    nuevaFila.innerHTML=`
-    <td>${item}</td><td style="display: none;><input type="text" class="form-control" id="id" value="${idEquipo}" /td><td>${descripEquipo}</td><td>${precioEquipo}</td><td>${cantidad}</td><td>${precioEquipo*cantidad}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">x</button></td>`;
-    cuerpoTabla.appendChild(nuevaFila);
+    const equipoExistente = carrito.find(item => item.codigoEquipo === parseInt(idEquipo));
+    item=numeroFilas;
+    if (!equipoExistente) {
+     
+      const cuerpoTabla=document.getElementById("detalle");
+      const nuevaFila=document.createElement("tr");
+      const descripEquipo=document.getElementById("descipProducto").textContent;
+      const precioEquipo=parseFloat(document.getElementById("precioEquipo").textContent);
+      const cantidad=Number(document.getElementById("cantidad").value);
+      const importe = precioEquipo * cantidad;
+      carrito.push({
+              codigoEquipo: parseInt(idEquipo),
+              descripcion: descripEquipo,
+              precio: precioEquipo,
+              cantidad: cantidad,
+              importe: importe
+      });
+      item++;
+      nuevaFila.innerHTML=`
+      <td>${item}</td><td style="display: none;">${idEquipo}</td><td>${descripEquipo}</td><td>${precioEquipo}</td><td>${cantidad}</td><td>${precioEquipo*cantidad}</td><td><button type="button" class="btn btn-danger btn-sm" onclick="eliminarFila(this)">x</button></td>`;
+      cuerpoTabla.appendChild(nuevaFila);
+      actualizarLocalStorage();
+     
+
+    }
+    else{
+      mostrarError("Equipo ya se encuentra Agregado")
+    }
   }
   limpiar();
-  sumarColumna()
+  sumarColumna();
 }
+function actualizarLocalStorage() {
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+}
+function mostrarError(error){
+  const mensajeError = document.createElement('span');
+  mensajeError.textContent =error;
+  mensajeError.classList.add('badge', 'bg-danger')
+  const contenido = document.querySelector(".mensaje");
+  contenido.appendChild(mensajeError);
+  setTimeout(()=>{
+      mensajeError.remove();
+  }, 3000);
+
+}
+let eliminarTodo = document.querySelector(".eliminartodo")
+eliminarTodo.addEventListener('click', vaciarCarritoCompleto)
+function vaciarCarritoCompleto() {
+  carrito = [];
+  actualizarLocalStorage();
+  const cuerpoTabla = document.getElementById("detalle");
+  cuerpoTabla.innerHTML = "";
+  sumarColumna();
+}
+
+
 
 
