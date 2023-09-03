@@ -5,6 +5,7 @@ let IGV=0.18;
 let total=0;
 let item;
 document.addEventListener('DOMContentLoaded', ()=>{
+   cargarEquipoJSON()
   if(JSON.parse(localStorage.getItem('carrito')) == null){
     carrito = [];
   }else {
@@ -31,13 +32,38 @@ function cargarCarritoEnDOM() {
   });
   sumarColumna();
 }
-const equipos=[
-    {id:1, nobreEquipo:"Laptop",precio:1000, imagenEquipo:"./imagenes/laptop.jpg"},
-    {id:2, nobreEquipo:"PC",precio:1500, imagenEquipo:"./imagenes/pc.jpg"},
-    {id:3, nobreEquipo:"Impresora",precio:700, imagenEquipo:"./imagenes/impresora.jpg"}, 
-    {id:4, nobreEquipo:"Monitor",precio:200, imagenEquipo:"./imagenes/monitor.jpg"},
-
-];
+function cargarEquipoJSON() {
+    fetch('./data/equipos.json') 
+      .then(repuesta => {
+        return repuesta.json();
+      })
+      .then(listaEquipos => {
+        equipos = listaEquipos;
+        for(let equipo of equipos)
+        { 
+            let agregarEquipos=document.querySelector(".agregarequipos");
+            agregarEquipos.innerHTML+=` 
+            <div class="card  mb-1">
+            <div class="card-body">
+            <span class="badge text-bg-light">${equipo.nobreEquipo}</span><br>
+              <img src="${equipo.imagenEquipo}" class="img-thumbnail" alt="Laptop">
+              <label  class="form-label">Precio:s/ ${equipo.precio}<br>
+              <div class="input-group mb-3 input-group-sm">
+              <button type="button" class="btn btn-success comprar" value="${equipo.id}" data-bs-toggle="modal" data-bs-target="#exampleModal">Comprar</button>
+            </div>
+            </div>
+          </div>`
+        }
+        asignarEventosCompra()
+      })
+      .catch(error => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo cargar la información de Equipos',
+        });
+      });
+  }
 function sumarColumna() {
   const tabla = document.getElementById("detalle");
   const filas = tabla.getElementsByTagName("tr");
@@ -82,92 +108,80 @@ function validarNumeros(event) {
     cajaTexto.value = valor.replace(/\D/g, '');
   }
 }
-
-function buscar(){
-    let codigo= codigoEquipo;
-    const caractEquipos=[
-        {id:1, descripEquipo:"Laptop - Lenovo I3 RAM:8GB Disco:240GB",precio:1000},
-        {id:2, descripEquipo:"PC - DELL I7 RAM:16GB Disco:1TB",precio:1500},
-        {id:3, descripEquipo:"Impresora - EPSON Multifuncional",precio:700},
-        {id:4, descripEquipo:"Monitor - LG 19 Pulgadas",precio:200},
-    ]
-    function mostrarCaracteristicas(caracteristicas){
-        caracteristicas.forEach( detEquipo => {
-            let agregarequipos=document.querySelector(".detalleCaracteristicas");
-            agregarequipos.innerHTML+=`<div class="row" id="w"><div class="col-8">
-              <span style="display: none;" id="codigoEquipo">${detEquipo.id}</span>
-              <span class="badge text-bg-info">Descripción Equipo:</span> <span class="badge text-bg-light descipProducto" id="descipProducto">${detEquipo.descripEquipo}</span><br>
-              <span class="badge text-bg-info">Precio: s/</span>
-              <span class="badge text-bg-light precioProducto" id="precioEquipo"> ${detEquipo.precio}</span>
-            </div>
-            <div class="col-4">
-            <label for="exampleFormControlInput1" class="form-label">Ingresar Cantidad</label>
-              <div class="input-group">
-                <button class="btn btn-outline-warning disminuir" type="button">-</button>
-                <input type="text" class="form-control" id="cantidad" value="1" oninput="validarNumeros(event)" style="text-align: center;">
-                <button class="btn btn-outline-success aumentar" type="button">+</button>
-              </div>
-            </div>
-              </div>`
-            codigoEquipo=0;
-        })
-        let aumentarCantidad = document.querySelector(".aumentar")
-        aumentarCantidad.addEventListener('click', incrementarContador)
-        let contador = 0;
-        function incrementarContador() {
-          contador=document.getElementById("cantidad").value;
-          contador++;
-            if(contador<=11){
-            document.getElementById("cantidad").value = contador;
-            }
+function buscar() {
+    let codigo = codigoEquipo;
+    const caractEquipos = './data/caracEquipos.json'; 
+    fetch(caractEquipos)
+      .then(respuesta => {
+        return respuesta.json();
+      })
+      .then(datos => {
+        const equipoEncontrado = datos.find(equipo => equipo.id === codigo);
+        if (equipoEncontrado) {
+          mostrarCaracteristicas([equipoEncontrado]);
         }
-        let restarCantidad = document.querySelector(".disminuir")
-        restarCantidad.addEventListener('click', disminuirContador)
-        function disminuirContador() {
-          contador=document.getElementById("cantidad").value;
-          if (contador > 0) {
-            contador--;
-            document.getElementById("cantidad").value = contador;
-          }
-        }     
-    }
-    function filtrarCaracterisiticas(){
-        const resultado = caractEquipos.filter(filtrarId)
-        if(resultado.length){
-            mostrarCaracteristicas(resultado);
-        }
-    }
-    function filtrarId(caractEquipos){
-        if(codigo){
-            return caractEquipos.id === codigo; 
-        }
-       return equipo;
-    }
-    filtrarCaracterisiticas(caractEquipos)
+      })
+      .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No se pudo cargar la información de Caracterisitcas Equipo',
+          });
+      });
   }
-for(let equipo of equipos)
-{ 
-    let agregarEquipos=document.querySelector(".agregarequipos");
-    agregarEquipos.innerHTML+=` 
-    <div class="card  mb-1">
-    <div class="card-body">
-    <span class="badge text-bg-light">${equipo.nobreEquipo}</span><br>
-      <img src="${equipo.imagenEquipo}" class="img-thumbnail" alt="Laptop">
-      <label for="exampleFormControlInput1" class="form-label">Precio:s/ ${equipo.precio}<br>
-      <div class="input-group mb-3 input-group-sm">
-      <button type="button" class="btn btn-success comprar" value="${equipo.id}" data-bs-toggle="modal" data-bs-target="#exampleModal">Comprar</button>
-     </div>
-    </div>
-  </div>`
-}
-const btnComprar = document.querySelectorAll(".comprar");
-btnComprar.forEach(comprar => {
-    comprar.addEventListener("click", () => {
-    codigoEquipo=Number(comprar.value);
-    buscar(codigoEquipo)
+function mostrarCaracteristicas(caracteristicas) {
+    caracteristicas.forEach(detEquipo => {
+      let agregarequipos = document.querySelector(".detalleCaracteristicas");
+      agregarequipos.innerHTML = `<div class="row" id="w"><div class="col-8">
+        <span style="display: none;" id="codigoEquipo">${detEquipo.id}</span>
+        <span class="badge text-bg-info">Descripción Equipo:</span> <span class="badge text-bg-light descipProducto" id="descipProducto">${detEquipo.descripEquipo}</span><br>
+        <span class="badge text-bg-info">Precio: s/</span>
+        <span class="badge text-bg-light precioProducto" id="precioEquipo"> ${detEquipo.precio}</span>
+      </div>
+      <div class="col-4">
+      <label for="exampleFormControlInput1" class="form-label">Ingresar Cantidad</label>
+        <div class="input-group">
+          <button class="btn btn-outline-warning disminuir" type="button">-</button>
+          <input type="text" class="form-control" id="cantidad" value="1" oninput="validarNumeros(event)" style="text-align: center;">
+          <button class="btn btn-outline-success aumentar" type="button">+</button>
+        </div>
+      </div>
+        </div>`;
+      codigoEquipo = 0;
+    });
+  
+    let aumentarCantidad = document.querySelector(".aumentar")
+    aumentarCantidad.addEventListener('click', incrementarContador)
+    let contador = 0;
+  
+    function incrementarContador() {
+      contador = document.getElementById("cantidad").value;
+      contador++;
+      if (contador <= 11) {
+        document.getElementById("cantidad").value = contador;
+      }
     }
-    );
-  })
+  
+    let restarCantidad = document.querySelector(".disminuir")
+    restarCantidad.addEventListener('click', disminuirContador)
+  
+    function disminuirContador() {
+      contador = document.getElementById("cantidad").value;
+      if (contador > 0) {
+        contador--;
+        document.getElementById("cantidad").value = contador;
+      }
+    }
+  }
+function asignarEventosCompra() {
+    const btnComprar = document.querySelectorAll(".comprar");
+    btnComprar.forEach(comprar => {
+      comprar.addEventListener("click", () => {
+        codigoEquipo = Number(comprar.value);
+        buscar(codigoEquipo);
+      });
+    });
+  }
 let Cerrarmodal = document.querySelector(".cerrarModal")
 Cerrarmodal.addEventListener('click', limpiar)
 let Cancelar = document.querySelector(".Cancelar")
@@ -241,6 +255,8 @@ function vaciarCarritoCompleto() {
   cuerpoTabla.innerHTML = "";
   sumarColumna();
 }
+
+
 
 
 
