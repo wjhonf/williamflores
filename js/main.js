@@ -60,7 +60,7 @@ function cargarEquipoJSON() {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No se pudo cargar la información de Equipos',
+          text: 'No se pudo cargar la información de Equipos.',
         });
       });
   }
@@ -125,7 +125,7 @@ function buscar() {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No se pudo cargar la información de Caracterisitcas Equipo',
+            text: 'No se pudo cargar información de equipo seleccionado.',
           });
       });
   }
@@ -226,7 +226,11 @@ function AgregarDetalle(){
 
     }
     else{
-      mostrarError("Equipo ya se encuentra Agregado")
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Equipo Selecionado ya esta agregado.',
+          });
     }
   }
   limpiar();
@@ -234,17 +238,6 @@ function AgregarDetalle(){
 }
 function actualizarLocalStorage() {
   localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-function mostrarError(error){
-  const mensajeError = document.createElement('span');
-  mensajeError.textContent =error;
-  mensajeError.classList.add('badge', 'bg-danger')
-  const contenido = document.querySelector(".mensaje");
-  contenido.appendChild(mensajeError);
-  setTimeout(()=>{
-      mensajeError.remove();
-  }, 3000);
-
 }
 let eliminarTodo = document.querySelector(".eliminartodo")
 eliminarTodo.addEventListener('click', vaciarCarritoCompleto)
@@ -255,9 +248,3 @@ function vaciarCarritoCompleto() {
   cuerpoTabla.innerHTML = "";
   sumarColumna();
 }
-
-
-
-
-
-
