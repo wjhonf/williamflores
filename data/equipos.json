@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "nobreEquipo": "Laptop",
+      "precio": 1000,
+      "imagenEquipo": "./imagenes/laptop.jpg"
+    },
+    {
+      "id": 2,
+      "nobreEquipo": "PC",
+      "precio": 1500,
+      "imagenEquipo": "./imagenes/pc.jpg"
+    },
+    {
+      "id": 3,
+      "nobreEquipo": "Impresora",
+      "precio": 700,
+      "imagenEquipo": "./imagenes/impresora.jpg"
+    },
+    {
+      "id": 4,
+      "nobreEquipo": "Monitor",
+      "precio": 200,
+      "imagenEquipo": "./imagenes/monitor.jpg"
+    }
+  ]
